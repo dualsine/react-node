@@ -5,7 +5,7 @@ const hooks = require('./user.hooks');
 module.exports = function(app){
   const Model = createModel(app);
   const serv = createService({
-    name: 'user',
+    name: 'users',
     Model,
     paginate: {
       default: 10,
@@ -13,9 +13,9 @@ module.exports = function(app){
     },
   });
 
-  app.use('/user', serv);
+  app.use('/users', serv);
 
-  const service = app.service('user');
+  const service = app.service('users');
 
   service.hooks(hooks);
 }

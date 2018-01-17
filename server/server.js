@@ -2,20 +2,28 @@ const path = require('path');
 const feathers = require('@feathersjs/feathers');
 const express = require('@feathersjs/express');
 const socketio = require('@feathersjs/socketio');
+const auth = require('@feathersjs/authentication');
+const local = require('@feathersjs/authentication-local');
+const jwt = require('@feathersjs/authentication-jwt');
 const helmet = require('helmet');
 
+const config = require('../config');
+
 const isDeveloping = process.env.NODE_ENV !== 'production';
-const port = isDeveloping ? 3000 : process.env.PORT;
+const port = isDeveloping ? config.port : process.env.PORT;
 
 const app = express(feathers());
 
 app.use(express.static(__dirname + '../dist'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-//app.configure(express.rest());
+app.configure(express.rest());
 app.configure(socketio());
-app.use(express.errorHandler());
+app.configure(auth(config.auth));
+app.configure(local());
+app.configure(jwt());
 app.use(helmet());
+app.use(express.errorHandler());
 
 if (process.env.NODE_ENV === 'development') {
   const webpack = require('webpack');
@@ -39,7 +47,33 @@ app.configure(models);
 app.configure(channels);
 app.hooks(appHooks);
 
-app.listen(port, '0.0.0.0', function(err) {
+app.service('users').hooks({
+  after: local.hooks.protect('password'),
+});
+
+app.service('authentication').hooks({
+  before: {
+    create: [
+      auth.hooks.authenticate(['jwt', 'local']),
+    ],
+    remove: [
+      auth.hooks.authenticate('jwt'),
+    ],
+  },
+});
+
+app.service('users').hooks({
+  before: {
+    find: [
+      auth.hooks.authenticate('jwt'),
+    ],
+    create: [
+      local.hooks.hashPassword({ passwordField: 'password' }),
+    ],
+  },
+});
+
+app.listen(config.port, config.host, function(err) {
   if (err) console.log(err);
-  console.info('Listening on port %s. Open up http://0.0.0.0:%s/ in your browser.', port, port);
+  console.info('Listening on port %s. Open up http://%s:%s/ in your browser.', config.port, config.host, config.port);
 });
