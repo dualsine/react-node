@@ -11,11 +11,11 @@ module.exports = {
     modules: ['node_modules']
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$|\.jsx$/,
         exclude: /node_modules/,
-        loaders: ['babel-loader', 'eslint-loader']
+        loaders: ['babel-loader'/*, 'eslint-loader'*/]
       },
       {
         test: /\.(scss|css)$/,

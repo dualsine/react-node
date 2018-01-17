@@ -51,21 +51,10 @@ app.service('users').hooks({
 app.service('authentication').hooks({
   before: {
     create: [
-      auth.hooks.authenticate(['jwt', 'local']),
+      auth.hooks.authenticate(['jwt']),
     ],
     remove: [
       auth.hooks.authenticate('jwt'),
-    ],
-  },
-});
-
-app.service('users').hooks({
-  before: {
-    find: [
-      auth.hooks.authenticate('jwt'),
-    ],
-    create: [
-      local.hooks.hashPassword({ passwordField: 'password' }),
     ],
   },
 });

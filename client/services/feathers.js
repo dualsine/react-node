@@ -13,7 +13,7 @@ class Feathers {
   }
 
   init() {
-    const socket = io('http://localhost:3000', {
+    this.socket = io('http://localhost:3000', {
       transports: ['websocket'],
       forceNew: true,
     });
@@ -23,7 +23,7 @@ class Feathers {
       entity: 'user',
       service: 'users',
     }));
-    this.client.configure(socketio(socket));
+    this.client.configure(socketio(this.socket));
   }
 
   async loginFromStorage() {
@@ -40,14 +40,19 @@ class Feathers {
 
   async loginWithPassword(email, password) {
     try {
-      const { accessToken } = await this.client.authenticate({
-        strategy: 'local',
+      /*const { accessToken } = await this.client.authenticate({
+        strategy: 'jwt',
+        email,
+        password,
+      });
+      */
+      const { accessToken } = await this.socket.emit('authenticate', {
+        strategy: 'jwt',
         email,
         password,
       });
       console.log(accessToken);
       const payload = await this.client.passport.verifyJWT(accessToken);
-      console.log(payload);
       const user = await this.client.service('users').get(payload.userId);
       this.client.set('user', user);
       return {
@@ -68,7 +73,6 @@ class Feathers {
       const emails = await this.client.service('users').find({
         query: {
           email,
-          $limit: 0,
         },
       });
       return emails.total;
@@ -97,7 +101,7 @@ class Feathers {
 
   async logout() {
     try{
-
+      await this.client.logout();
     } catch (error) {
 
     }

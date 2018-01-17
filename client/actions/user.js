@@ -1,13 +1,13 @@
 import feathers from '../services/feathers';
 
+export const LOGOUT = 'LOGOUT';
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_ACCEPTED = 'LOGIN_ACCEPTED';
 export const LOGIN_REJECTED = 'LOGIN_REJECTED';
 export const SIGNUP_REQUEST = 'SIGNUP_REQUEST';
 export const SIGNUP_REJECTED = 'SIGNUP_REJECTED';
 export const SIGNUP_ACCEPTED = 'SIGNUP_ACCEPTED';
-export const DELETE_REDIRECT_LOGIN = 'DELETE_REDIRECT_LOGIN';
-export const DELETE_REDIRECT_HOME = 'DELETE_REDIRECT_HOME';
+export const REMOVE_REDIRECT = 'REMOVE_REDIRECT';
 
 export function loginFromStorage() {
   return async (dispatch) => {
@@ -81,14 +81,17 @@ export function signup(email, password) {
   };
 }
 
-export function deleteRedirectHome() {
-  return {
-    type: DELETE_REDIRECT_HOME,
+export function logout() {
+  return async (dispatch) => {
+    await feathers.logout();
+    dispatch({
+      type: LOGOUT,
+    });
   };
 }
 
-export function deleteRedirectLogin() {
+export function removeRedirect() {
   return {
-    type: DELETE_REDIRECT_LOGIN,
+    type: REMOVE_REDIRECT,
   };
 }

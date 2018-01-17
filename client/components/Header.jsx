@@ -1,10 +1,19 @@
 import React from 'react';
 import { Container, Menu } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 class Header extends React.Component {
-  menuClick() {
-
+  guestElements() {
+    return [
+      <Menu.Item as={NavLink} to='/login' exact name='login' key="login" />,
+      <Menu.Item as={NavLink} to='/signup' exact name='signup' key="signup" />
+    ];
+  }
+  loggedElements() {
+    return [
+      <Menu.Item as={NavLink} to='/logout' exact name="logout" key="logout" />,
+    ];
   }
   render() {
     return (
@@ -16,18 +25,7 @@ class Header extends React.Component {
             exact
             name='home'
           />
-          <Menu.Item
-            as={NavLink}
-            to='/login'
-            exact
-            name='login'
-          />
-          <Menu.Item
-            as={NavLink}
-            to='/signup'
-            exact
-            name='signup'
-          />
+          {this.props.user.email ? this.loggedElements() : this.guestElements() }
 
           <Menu.Menu position='right'>
             <div className='ui right aligned category search item'>
@@ -44,4 +42,6 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+export default connect(
+  state => ({...state})
+)(Header);

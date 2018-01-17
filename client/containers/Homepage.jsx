@@ -2,12 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { deleteRedirectHome } from "../actions/user";
-
 class Homepage extends React.Component {
-  componentDidMount() {
-    if (this.props.user.redirectHome) this.props.deleteRedirectHome();
-  }
   render() {
     return(
       <div>
@@ -18,6 +13,5 @@ class Homepage extends React.Component {
 }
 
 export default connect(
-  state => ({ ...state }),
-  dispatch => bindActionCreators({deleteRedirectHome}, dispatch),
+  state => ({ ...state })
 )(Homepage);

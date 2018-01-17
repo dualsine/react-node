@@ -4,8 +4,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { loginFromStorage } from '../actions/user';
+
 import Header from '../components/Header';
 import Content from './Content';
+import Redirect from './AutoRedirect';
 
 class App extends React.Component {
   componentDidMount() {
@@ -17,6 +19,8 @@ class App extends React.Component {
         <Header />
 
         <Content />
+
+        <Redirect />
       </div>
     );
   }
