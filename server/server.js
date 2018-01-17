@@ -9,9 +9,6 @@ const helmet = require('helmet');
 
 const config = require('../config');
 
-const isDeveloping = process.env.NODE_ENV !== 'production';
-const port = isDeveloping ? config.port : process.env.PORT;
-
 const app = express(feathers());
 
 app.use(express.static(__dirname + '../dist'));

@@ -9,16 +9,7 @@ class Feathers {
 
     const usersService = this.client.service('users');
 
-    window.usersService = usersService;
-
-    this.loginFromStorage();
-
     usersService.on('created', res => console.log(res));
-
-    usersService.create({
-      email: 'admin@admin.com',
-      password: 'admin123',
-    }).then(res => console.log(res));
   }
 
   init() {
@@ -54,12 +45,61 @@ class Feathers {
         email,
         password,
       });
+      console.log(accessToken);
       const payload = await this.client.passport.verifyJWT(accessToken);
+      console.log(payload);
       const user = await this.client.service('users').get(payload.userId);
       this.client.set('user', user);
-      return user;
-    } catch (err) {
-      return null;
+      return {
+        success: true,
+        user,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        error: 'Wrong email or password.',
+      };
+    }
+  }
+
+  async countEmails(email) {
+    try {
+      const emails = await this.client.service('users').find({
+        query: {
+          email,
+          $limit: 0,
+        },
+      });
+      return emails.total;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async signup(email, password) {
+    try {
+      await this.client.service('users').create({
+        email,
+        password,
+      });
+
+      return {
+        success: true,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error,
+      };
+    }
+  }
+
+  async logout() {
+    try{
+
+    } catch (error) {
+
     }
   }
 }

@@ -18,7 +18,7 @@ module.exports = {
         loaders: ['babel-loader', 'eslint-loader']
       },
       {
-        test: /\.scss$/,
+        test: /\.(scss|css)$/,
         use: [{
           loader: "style-loader"
         }, {
@@ -26,6 +26,19 @@ module.exports = {
         }, {
           loader: "sass-loader"
         }]
+      },
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        loader: 'url-loader?limit=100000'
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {}
+          }
+        ]
       }
     ]
   }
